@@ -118,7 +118,7 @@ def main():
     args = parser.parse_args()
 
     app_id = args.app_id
-    
+    showGlobals = args.globals
     
     if len(args.keys) == 0:
         app_defaults = NSUserDefaults.alloc().initWithSuiteName_(app_id)
@@ -132,7 +132,7 @@ def main():
         if args.value:
             print repr(get_pref_value(app_id, key))
         else:
-            print_detail(app_id, key, args.globals, args.path)
+            print_detail(app_id, key, showGlobals, args.path)
 
 
 if __name__ == '__main__':
