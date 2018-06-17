@@ -2,6 +2,7 @@
 
 import os
 import sys
+import argparse
 from Foundation import (NSUserDefaults,
                        CFPreferencesAppValueIsForced,
                        CFPreferencesCopyAppValue,
@@ -97,23 +98,36 @@ def get_config_level(bundle_id, pref_name, value):
         return 'default'
     return 'unknown'
 
+def print_for_key(app_id, key, showGlobals):
+    value = get_pref_value(app_id, key)
+    type = get_type(value)
+    location = get_config_level(app_id, key, value)
+    if (showGlobals or "Global" not in location):
+        print "%s <%s>: %r (%s)" % (key, type, value, location)
 
 def main():
-    try:
-        app_id = sys.argv[1]
-    except IndexError:
-        print >> sys.stderr, "Usage: %s <domain>" % sys.argv[0]
-        sys.exit(-1)
+
+    parser = argparse.ArgumentParser()
+    parser.add_argument("app_id", metavar="APP_ID", help="the app identifier or preference domain")
+    parser.add_argument("keys", nargs="*", metavar="KEY", help="preference keys to show. When no key is given all values will be shown")
+    parser.add_argument("-g", "--globals", action="store_true", help="show values from GlobalPreferences files as well")
     
-    app_defaults = NSUserDefaults.alloc().initWithSuiteName_(app_id)
-    app_keys = app_defaults.dictionaryRepresentation().keys()
+    args = parser.parse_args()
+
+    app_id = args.app_id
+    showGlobals = args.globals
     
-    for key in app_keys:
-        value = get_pref_value(app_id, key)
-        type = get_type(value)
-        domain = get_config_level(app_id, key, value)
-        #if "Global" not in domain:
-        print "%s <%s>: (%s) %r" % (key, type, domain, value)
+    
+    if len(args.keys) == 0:
+        app_defaults = NSUserDefaults.alloc().initWithSuiteName_(app_id)
+        keys = app_defaults.dictionaryRepresentation().keys()
+    else:
+        keys = args.keys
+        # set showGlobals regardless so all keys will be shown
+        showGlobals = True
+    
+    for key in keys:
+        print_for_key(app_id, key, showGlobals)
 
 
 if __name__ == '__main__':
