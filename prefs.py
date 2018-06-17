@@ -65,14 +65,14 @@ def get_config_level(bundle_id, pref_name, value):
         {'location': 'User/ByHost/Global',
          'file': os.path.join(home_dir, 'Library/Preferences/ByHost',
                               '.GlobalPreferences.xxxx.plist'),
-         'domain': '.GlobalPreferences',
+         'domain': kCFPreferencesAnyApplication,
          'user': kCFPreferencesCurrentUser,
          'host': kCFPreferencesCurrentHost
         },
         {'location': 'User/Global',
          'file': os.path.join(home_dir, 'Library/Preferences',
                               '.GlobalPreferences.plist'),
-         'domain': '.GlobalPreferences',
+         'domain': kCFPreferencesAnyApplication,
          'user': kCFPreferencesCurrentUser,
          'host': kCFPreferencesAnyHost
         },
@@ -84,7 +84,7 @@ def get_config_level(bundle_id, pref_name, value):
         },
         {'location': 'Computer/Global',
          'file': '/Library/Preferences/.GlobalPreferences.plist',
-         'domain': '.GlobalPreferences',
+         'domain': kCFPreferencesAnyApplication,
          'user': kCFPreferencesAnyUser,
          'host': kCFPreferencesCurrentHost
         },
