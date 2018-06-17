@@ -98,7 +98,7 @@ def get_config_level(bundle_id, pref_name, value):
         return 'default'
     return 'unknown'
 
-def print_for_key(app_id, key, showGlobals):
+def print_detail(app_id, key, showGlobals):
     value = get_pref_value(app_id, key)
     type = get_type(value)
     location = get_config_level(app_id, key, value)
@@ -106,11 +106,11 @@ def print_for_key(app_id, key, showGlobals):
         print "%s <%s>: %r (%s)" % (key, type, value, location)
 
 def main():
-
     parser = argparse.ArgumentParser()
     parser.add_argument("app_id", metavar="APP_ID", help="the app identifier or preference domain")
     parser.add_argument("keys", nargs="*", metavar="KEY", help="preference keys to show. When no key is given all values will be shown")
     parser.add_argument("-g", "--globals", action="store_true", help="show values from GlobalPreferences files as well")
+    parser.add_argument("-V", "--value", action="store_true", help="show only the value, no other information")
     
     args = parser.parse_args()
 
@@ -127,7 +127,10 @@ def main():
         showGlobals = True
     
     for key in keys:
-        print_for_key(app_id, key, showGlobals)
+        if args.value:
+            print repr(get_pref_value(app_id, key))
+        else:
+            print_detail(app_id, key, showGlobals)
 
 
 if __name__ == '__main__':
