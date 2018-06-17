@@ -109,9 +109,15 @@ def print_detail(app_id, key, showGlobals, showPath):
         print "%s <%s>: %r (%s)" % (key, type, value, location)
 
 def main():
+    prefs_version="0.1"
+    
     parser = argparse.ArgumentParser()
+    
     parser.add_argument("app_id", metavar="APP_ID", help="the app identifier or preference domain")
     parser.add_argument("keys", nargs="*", metavar="KEY", help="preference keys to show. When no key is given all values will be shown")
+    
+    parser.add_argument('--version', help='prints the version', action='version', version=prefs_version)
+
     parser.add_argument("-g", "--globals", action="store_true", help="show values from GlobalPreferences files as well")
     parser.add_argument("-V", "--value", action="store_true", help="show only the value, no other information")
     parser.add_argument("-p", "--path", action="store_true", help="print path to plist file instead of domain")
