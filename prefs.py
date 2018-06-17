@@ -40,7 +40,7 @@ def get_pref_value(bundle_id, pref_name):
     '''Returns the effective value of a preference'''
     return CFPreferencesCopyAppValue(pref_name, bundle_id)
 
-def get_config_level(bundle_id, pref_name, value):
+def get_config_level(bundle_id, pref_name, value, showPath):
     '''Returns a string indicating where the given preference is defined'''
     if value is None:
         return 'not set'
@@ -93,15 +93,18 @@ def get_config_level(bundle_id, pref_name, value):
     for level in levels:
         if (value == CFPreferencesCopyValue(
                 pref_name, level['domain'], level['user'], level['host'])):
-            return level['location']
+            if showPath:
+                return level['file']
+            else:
+                return level['location']
     if value == DEFAULT_PREFS.get(pref_name):
         return 'default'
     return 'unknown'
 
-def print_detail(app_id, key, showGlobals):
+def print_detail(app_id, key, showGlobals, showPath):
     value = get_pref_value(app_id, key)
     type = get_type(value)
-    location = get_config_level(app_id, key, value)
+    location = get_config_level(app_id, key, value, showPath)
     if (showGlobals or "Global" not in location):
         print "%s <%s>: %r (%s)" % (key, type, value, location)
 
@@ -111,11 +114,10 @@ def main():
     parser.add_argument("keys", nargs="*", metavar="KEY", help="preference keys to show. When no key is given all values will be shown")
     parser.add_argument("-g", "--globals", action="store_true", help="show values from GlobalPreferences files as well")
     parser.add_argument("-V", "--value", action="store_true", help="show only the value, no other information")
-    
+    parser.add_argument("-p", "--path", action="store_true", help="print path to plist file instead of domain")
     args = parser.parse_args()
 
     app_id = args.app_id
-    showGlobals = args.globals
     
     
     if len(args.keys) == 0:
@@ -130,7 +132,7 @@ def main():
         if args.value:
             print repr(get_pref_value(app_id, key))
         else:
-            print_detail(app_id, key, showGlobals)
+            print_detail(app_id, key, args.globals, args.path)
 
 
 if __name__ == '__main__':
