@@ -97,8 +97,6 @@ def get_config_level(bundle_id, pref_name, value, showPath):
                 return level['file']
             else:
                 return level['location']
-    if value == DEFAULT_PREFS.get(pref_name):
-        return 'default'
     return 'unknown'
 
 def print_detail(app_id, key, showGlobals, showPath):
